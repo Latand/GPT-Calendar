@@ -30,7 +30,7 @@ async def any_message(
     message: types.Message,
     state: FSMContext,
     openai: OpenAIAPIClient,
-    calendar,
+    calendar_service,
     function_definitions,
 ):
     service_message = await message.reply(
@@ -53,25 +53,32 @@ async def any_message(
     total_tokens = 0
     for step in range(MAX_STEPS):
         logging.info(f"{conversation.messages=}")
-        opanai_answer = await openai.request_chat_completion(
-            messages=conversation.messages,
-            user_id=message.from_user.id,
-            model="gpt-3.5-turbo-0613",
-            temperature=0.2,
-            max_tokens=1000,
-            functions=function_definitions,
-        )
+        try:
+            opanai_answer = await openai.request_chat_completion(
+                messages=conversation.messages,
+                user_id=message.from_user.id,
+                model="gpt-3.5-turbo-0613",
+                temperature=0.2,
+                max_tokens=1000,
+                functions=function_definitions,
+            )
+        except Exception as e:
+            await message.reply(f"Error: {e}")
+            return
+
         total_tokens += opanai_answer.usage.total_tokens
         function_call: FunctionCall = opanai_answer.choices[0].message.function_call
         if function_call:
-            service_messages += f"{step + 1}. Function call: {function_call.name}\n"
+            service_messages += f"\n{step + 1}. Function call: {function_call.name}"
             await service_message.edit_text(service_messages)
             try:
-                output = call_function(calendar, function_call)
+                output = call_function(calendar_service, function_call)
             except Exception as e:
                 await message.reply(f"Error: {e}")
                 return
             conversation.add_function_output(output, function_call.name)
+            service_messages += f" ✅" + "\nPreparing answer...\n\n"
+            await service_message.edit_text(service_messages)
             text = f"Successfully called function {function_call.name}"
         else:
             text = opanai_answer.choices[0].message.content
@@ -81,7 +88,10 @@ async def any_message(
         text = "No answer"
 
     text += (
-        "\n\n" f"ℹ️Total tokens: {total_tokens}" "\n" "To reset conversation press /reset"
+        "\n\n"
+        f"ℹ️Total tokens: {total_tokens}"
+        "\n"
+        "To reset conversation press /reset"
     )
     await state.update_data(history=conversation.to_raw())
     await message.reply(text)

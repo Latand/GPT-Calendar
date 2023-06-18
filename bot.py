@@ -42,13 +42,13 @@ async def main():
     dp = Dispatcher(storage=storage)
 
     openai = OpenAIAPIClient(config.misc.openai_api_key)
-    calendar = GoogleCalendar(
+    calendar_service = GoogleCalendar(
         credentials_path="./infrastructure/function_services/creds/config.json",
         token_path="./infrastructure/function_services/creds/token.pickle",
     )
-    with open('./infrastructure/function_services/definitions.json', 'r') as f:
-        function_definitions = json.load(f)
 
+    with open("./infrastructure/function_services/definitions.json", "r") as f:
+        function_definitions = json.load(f)
 
     dp.include_routers(*routers_list)
 
@@ -58,7 +58,7 @@ async def main():
     )
     dp.workflow_data.update(
         openai=openai,
-        calendar=calendar,
+        calendar_service=calendar_service,
         function_definitions=function_definitions,
     )
 

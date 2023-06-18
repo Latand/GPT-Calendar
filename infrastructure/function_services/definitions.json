@@ -1,97 +1,115 @@
- [
-    {
-        "name": "add_task",
-        "description": "Add a task to the calendar",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "summary": {
-                    "type": "string",
-                    "description": "The task summary"
-                },
-                "start": {
-                    "type": "string",
-                    "description": "The task start time. '%Y-%m-%d %H:%M:%S'",
-                    "format": "date-time"
-                },
-                "end": {
-                    "type": "string",
-                    "description": "The task end time. '%Y-%m-%d %H:%M:%S'",
-                    "format": "date-time"
-                },
-                "description": {
-                    "type": "string",
-                    "description": "The task description"
-                },
-                "priority": {
-                    "type": "string",
-                    "description": "The task priority",
-                    "enum": ["high", "medium", "low"]
-                }
-            },
-            "required": ["summary", "start", "end", "priority"]
+[
+  {
+    "name": "add_task",
+    "description": "Add a task to the calendar",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "summary": {
+          "type": "string",
+          "description": "The task summary"
+        },
+        "start": {
+          "type": "string",
+          "description": "The task start time. '%Y-%m-%d %H:%M:%S'",
+          "format": "date-time"
+        },
+        "end": {
+          "type": "string",
+          "description": "The task end time. '%Y-%m-%d %H:%M:%S'",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string",
+          "description": "The task description"
+        },
+        "priority": {
+          "type": "string",
+          "description": "The task priority",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
         }
-    },
-    {
-        "name": "get_tasks",
-        "description": "Get the user's schedule for a specific time period",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "start": {
-                    "type": "string",
-                    "description": "The start of the time period '%Y-%m-%d'"
-                },
-                "end": {
-                    "type": "string",
-                    "description": "The end of the time period '%Y-%m-%d'"
-                }
-            },
-            "required": ["start", "end"]
-        }
-    },
-    {
-        "name": "get_week_tasks",
-        "description": "Get the user's schedule for the week",
-        "parameters": {
-            "type": "object",
-            "properties": {}
-        }
-    },
-    {
-        "name": "rearrange_task",
-        "description": "Rearrange a task in the calendar",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "task_id": {
-                    "type": "string",
-                    "description": "The ID of the task"
-                },
-                "start": {
-                    "type": "string",
-                    "description": "The new start time for the task '%Y-%m-%d %H:%M:%S'"
-                },
-                "end": {
-                    "type": "string",
-                    "description": "The new end time for the task '%Y-%m-%d %H:%M:%S'"
-                }
-            },
-            "required": ["task_id", "start", "end"]
-        }
-    },
-    {
-        "name": "delete_task",
-        "description": "Delete a task from the calendar",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "task_id": {
-                    "type": "string",
-                    "description": "The ID of the task"
-                }
-            },
-            "required": ["task_id"]
-        }
+      },
+      "required": [
+        "summary",
+        "start",
+        "end",
+        "priority"
+      ]
     }
+  },
+  {
+    "name": "get_tasks",
+    "description": "Get the user's schedule for a specific time period",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "string",
+          "description": "The start of the time period '%Y-%m-%d'"
+        },
+        "end": {
+          "type": "string",
+          "description": "The end of the time period '%Y-%m-%d'"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ]
+    }
+  },
+  {
+    "name": "get_week_tasks",
+    "description": "Get the user's schedule for the week",
+    "parameters": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "rearrange_task",
+    "description": "Rearrange a task in the calendar",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "description": "The ID of the task"
+        },
+        "start": {
+          "type": "string",
+          "description": "The new start time for the task '%Y-%m-%d %H:%M:%S'"
+        },
+        "end": {
+          "type": "string",
+          "description": "The new end time for the task '%Y-%m-%d %H:%M:%S'"
+        }
+      },
+      "required": [
+        "task_id",
+        "start",
+        "end"
+      ]
+    }
+  },
+  {
+    "name": "delete_task",
+    "description": "Delete a task from the calendar",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "description": "The ID of the task"
+        }
+      },
+      "required": [
+        "task_id"
+      ]
+    }
+  }
 ]

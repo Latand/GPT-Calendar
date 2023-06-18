@@ -45,7 +45,9 @@ def get_color_by_priority(priority):
         return 1
 
 
-def add_task(calendar: EventsService, args: ArgsAddTask, timezone: str = USER_TIMEZONE):
+def add_event(
+        calendar: EventsService, args: ArgsAddTask, timezone: str = USER_TIMEZONE
+):
     """
     Add a task to the calendar
     """
@@ -65,13 +67,13 @@ def add_task(calendar: EventsService, args: ArgsAddTask, timezone: str = USER_TI
 def tasks_to_string(tasks):
     return "\n".join(
         [
-            f"""ID:{task.id}|Name:{task.summary}|Datetime:{task.start.strftime("%Y-%m-%d %H:%M:%S")}|Duration:{(task.end - task.start).seconds // 3600}h|Priority:{task.color_id}"""
+            f"""ID:{task.id}|Name:{task.summary}|Datetime:{task.start.strftime("%Y-%m-%d %H:%M:%S")}|Duration:{(task.end - task.start).seconds // 60}m|Priority:{task.color_id}"""
             for task in tasks
         ]
     )
 
 
-def get_tasks(calendar: EventsService, args: ArgsGetTasks):
+def get_events(calendar: EventsService, args: ArgsGetTasks):
     """
     Get the user's schedule for a specific time period
     """
@@ -79,7 +81,7 @@ def get_tasks(calendar: EventsService, args: ArgsGetTasks):
     return tasks_to_string(tasks)
 
 
-def get_week_tasks(calendar: EventsService, timezone: str = USER_TIMEZONE):
+def get_week_events(calendar: EventsService, timezone: str = USER_TIMEZONE):
     """
     Get the user's schedule for the current  week
     """
@@ -92,7 +94,7 @@ def get_week_tasks(calendar: EventsService, timezone: str = USER_TIMEZONE):
     return tasks_to_string(tasks)
 
 
-def rearrange_task(calendar: EventsService, args: ArgsRearrangeTask):
+def rearrange_event(calendar: EventsService, args: ArgsRearrangeTask):
     """
     Rearrange a task in the calendar
     """
@@ -102,14 +104,16 @@ def rearrange_task(calendar: EventsService, args: ArgsRearrangeTask):
     calendar.update_event(event)
 
 
-def delete_task(calendar: EventsService, args: ArgsDeleteTask):
+def delete_event(calendar: EventsService, args: ArgsDeleteTask):
     """
     Delete a task from the calendar
     """
     calendar.delete_event(args.task_id)
 
 
-def call_function(calendar: EventsService, function_call: FunctionCall):
+def call_function(
+        calendar_service: EventsService, function_call: FunctionCall
+):
     """
     Call the function based on the action
     """
@@ -117,17 +121,20 @@ def call_function(calendar: EventsService, function_call: FunctionCall):
     args = json.loads(function_call.arguments) or {}
 
     if name == "add_task":
-        add_task(calendar, ArgsAddTask(**args))
+        add_event(calendar_service, ArgsAddTask(**args))
         return "Task added successfully"
     elif name == "get_tasks":
-        return get_tasks(calendar, ArgsGetTasks(**args)) or "No tasks for this period"
+        return (
+                get_events(calendar_service, ArgsGetTasks(**args))
+                or "No tasks for this period"
+        )
     elif name == "get_week_tasks":
-        return get_week_tasks(calendar) or "No tasks for this week"
+        return get_week_events(calendar_service) or "No tasks for this week"
     elif name == "rearrange_task":
-        rearrange_task(calendar, ArgsRearrangeTask(**args))
+        rearrange_event(calendar_service, ArgsRearrangeTask(**args))
         return "Task rearranged successfully"
     elif name == "delete_task":
-        delete_task(calendar, ArgsDeleteTask(**args))
+        delete_event(calendar_service, ArgsDeleteTask(**args))
         return "Task deleted successfully"
     else:
         raise Exception(f"Unknown action: {name}")
