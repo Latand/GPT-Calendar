@@ -1,3 +1,6 @@
+import datetime
+import logging
+
 from aiogram import types, Router, F
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
@@ -39,7 +42,9 @@ async def any_message(
     conversation = Conversation.from_raw(conversation_history)
 
     if not conversation.messages:
-        conversation.add_system_message(content=CALENDAR_ASSISTANT_PROMPT)
+        conversation.add_system_message(
+            content=CALENDAR_ASSISTANT_PROMPT.format(today_time=datetime.datetime.now())
+        )
 
     conversation.add_user_message(content=message.text, name=message.from_user.username)
 
@@ -47,6 +52,7 @@ async def any_message(
     text = ""
     total_tokens = 0
     for step in range(MAX_STEPS):
+        logging.info(f"{conversation.messages=}")
         opanai_answer = await openai.request_chat_completion(
             messages=conversation.messages,
             user_id=message.from_user.id,
@@ -61,7 +67,7 @@ async def any_message(
             service_messages += f"{step + 1}. Function call: {function_call.name}\n"
             await service_message.edit_text(service_messages)
             try:
-                output = await call_function(calendar, function_call)
+                output = call_function(calendar, function_call)
             except Exception as e:
                 await message.reply(f"Error: {e}")
                 return
@@ -75,7 +81,7 @@ async def any_message(
         text = "No answer"
 
     text += (
-        "\n" "Total tokens: {total_tokens}" "\n" "To reset conversation press /reset"
+        "\n\n" f"ℹ️Total tokens: {total_tokens}" "\n" "To reset conversation press /reset"
     )
     await state.update_data(history=conversation.to_raw())
     await message.reply(text)

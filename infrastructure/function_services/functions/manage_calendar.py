@@ -118,13 +118,16 @@ def call_function(calendar: EventsService, function_call: FunctionCall):
 
     if name == "add_task":
         add_task(calendar, ArgsAddTask(**args))
+        return "Task added successfully"
     elif name == "get_tasks":
-        return get_tasks(calendar, ArgsGetTasks(**args))
+        return get_tasks(calendar, ArgsGetTasks(**args)) or "No tasks for this period"
     elif name == "get_week_tasks":
-        return get_week_tasks(calendar)
+        return get_week_tasks(calendar) or "No tasks for this week"
     elif name == "rearrange_task":
         rearrange_task(calendar, ArgsRearrangeTask(**args))
+        return "Task rearranged successfully"
     elif name == "delete_task":
         delete_task(calendar, ArgsDeleteTask(**args))
+        return "Task deleted successfully"
     else:
         raise Exception(f"Unknown action: {name}")

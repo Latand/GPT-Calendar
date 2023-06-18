@@ -43,6 +43,6 @@ class OpenAIAPIClient(BaseClient):
             json=request.dict(exclude_none=True),
             headers=self.headers,
         )
-        logging.error(f"Chat completion response: {result}")
+        logging.info(f"Chat completion response: {result}")
 
         return ChatCompletionResponse(**result)

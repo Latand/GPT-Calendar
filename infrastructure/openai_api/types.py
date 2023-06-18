@@ -38,7 +38,7 @@ class Conversation:
 
     def add_function_output(self, content: str, function_name: str):
         self.messages.append(
-            ChatMessage(role="function_output", content=content, name=function_name)
+            ChatMessage(role="function", content=content, name=function_name)
         )
 
     @classmethod

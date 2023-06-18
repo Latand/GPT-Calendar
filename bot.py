@@ -43,10 +43,10 @@ async def main():
 
     openai = OpenAIAPIClient(config.misc.openai_api_key)
     calendar = GoogleCalendar(
-        credentials_path="infrastructure/google/creds/config.json",
-        token_path="infrastructure/google/creds/token.pickle",
+        credentials_path="./infrastructure/function_services/creds/config.json",
+        token_path="./infrastructure/function_services/creds/token.pickle",
     )
-    with open('infrastructure/function_services/definitions.json', 'r') as f:
+    with open('./infrastructure/function_services/definitions.json', 'r') as f:
         function_definitions = json.load(f)
 
 
