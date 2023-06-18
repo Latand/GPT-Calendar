@@ -41,8 +41,7 @@ async def any_message(
     conversation_history = state_data.get("history", [])
     conversation = Conversation.from_raw(conversation_history)
 
-    if not conversation.messages:
-        conversation.add_system_message(
+    conversation.add_system_message(
             content=CALENDAR_ASSISTANT_PROMPT.format(today_time=datetime.datetime.now())
         )
 
