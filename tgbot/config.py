@@ -5,35 +5,6 @@ from environs import Env
 
 
 @dataclass
-class DbConfig:
-    host: str
-    password: str
-    user: str
-    database: str
-    port: int = 5432
-
-    # For SQLAlchemy
-    def construct_sqlalchemy_url(self, driver="asyncpg", host=None, port=None) -> str:
-        # TODO: If you're using SQLAlchemy, move the import to the top of the file!
-        from sqlalchemy.engine.url import URL
-
-
-        if not host:
-            host = self.host
-        if not port:
-            port = self.port
-        uri = URL.create(
-            drivername=f"postgresql+{driver}",
-            username=self.user,
-            password=self.password,
-            host=host,
-            port=port,
-            database=self.database,
-        )
-        return uri.render_as_string(hide_password=False)
-
-
-@dataclass
 class TgBot:
     token: str
     admin_ids: list[int]
@@ -55,14 +26,13 @@ class RedisConfig:
 
 @dataclass
 class Miscellaneous:
-    other_params: str = None
+    openai_api_key: str
 
 
 @dataclass
 class Config:
     tg_bot: TgBot
     misc: Miscellaneous
-    db: DbConfig = None
     redis: RedisConfig = None
 
 
@@ -77,18 +47,13 @@ def load_config(path: str = None) -> Config:
             use_redis=env.bool("USE_REDIS")
         ),
 
-        # db=DbConfig(
-        #     host=env.str('DB_HOST'),
-        #     password=env.str('POSTGRES_PASSWORD'),
-        #     user=env.str('POSTGRES_USER'),
-        #     database=env.str('POSTGRES_DB'),
-        # ),
-
         # redis=RedisConfig(
         #     redis_pass=env.str("REDIS_PASSWORD"),
         #     redis_port=env.int("REDIS_PORT"),
         #     redis_host=env.str("REDIS_HOST"),
         # ),
 
-        misc=Miscellaneous()
+        misc=Miscellaneous(
+            openai_api_key=env.str("OPENAI_API_KEY"),
+        )
     )
