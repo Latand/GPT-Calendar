@@ -37,6 +37,7 @@ class OpenAIAPIClient(BaseClient):
             stream=stream,
             functions=functions,
         )
+        logging.info(f"Chat completion request: {request}")
         status, result = await self._make_request(
             method="POST",
             url="/v1/chat/completions",
