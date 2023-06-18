@@ -1,55 +1,15 @@
-Цей темплейт використовується для розробки Telegram ботів з використанням бібліотеки [`aiogram v3.0+`](https://github.com/aiogram/aiogram/tree/dev-3.x).
+# GPT-Calendar bot
 
-### Для того, щоб почати використовувати:
-1. Скопіюйте `.env.dist` в `.env` і заповніть необхідні дані.
-2. Створіть нові хендлери.
-3. **Docker:**
-   1. Можете одразу запускати проєкт із Docker, а якщо в вас його немає, то [завантажте, та встановіть](https://docs.docker.com/get-docker/).
-   2. Запустіть проєкт з команди `docker-compose up`
-4. **Без Docker:**
-   1. Створіть [venv](https://docs.python.org/3/library/venv.html)
-   2. Встановить залежності із requirements.txt: `pip install -r requirements.txt --pre`
-   3. Запустіть проєкт з команди `python3 bot.py`
+This bot enables you to manage your Google Calendar from Telegram with text thanks to the power of GPT.
 
-
-### Як робити та реєструвати хендлери:
-Створюєте модуль `you_name.py` у папці `handlers`.
-
-Створюєте роутер у `you_name.py`.
-```python
-from aiogram import Router
-user_router = Router()
-```
-Можна робити декілька роутерів в одному модулі, та на кожний з них навішувати хендлери.
-Можна реєструвати хендлери декораторами:
-```python
-@user_router.message(commands=["start"])
-async def user_start(message):
-    await message.reply("Вітаю, звичайний користувач!")
-```
-
-Заходимо у файл `bot.py` і додаємо всі роутери в нього:
-
-```python
-from tgbot.handlers.admin import admin_router
-from tgbot.handlers.echo import main_router
-from tgbot.handlers.user import user_router
-
-...
-
-
-async def main():
-   ...
-
-   for router in [
-      admin_router,
-      user_router,
-      ...,
-      main_router,
-
-   ]:
-      dp.include_router(router)
-```
-
-### Туторіали з aiogram v3
-Відосів поки що немає, але @Groosha вже почав робити [свій підручник](https://groosha.2038.io/telegram-tutorial-2/).
+## How to use
+1. [Create a new Google Cloud Platform (GCP) project](https://developers.google.com/workspace/guides/create-project)
+2. You will need to enable the “Google Calendar API” for your project in order to use the API. You can do this by navigating to the [Google Calendar API page](https://console.developers.google.com/apis/library/calendar-json.googleapis.com) and clicking “Enable”.
+3. [Configure the OAuth consent screen](https://developers.google.com/workspace/guides/configure-oauth-consent)
+4. [Create a OAuth client ID credential and download the `config.json` file](https://developers.google.com/workspace/guides/create-credentials#oauth-client-id)
+5. Place config.json in `infrastructure\google\creds\config.json`
+6. Run file [get_credentials.py](infrastructure%2Ffunction_services%2Fcreds%2Fget_credentials.py)
+7. Follow the instructions in the file 
+8. Install docker and docker-compose
+9. Copy .env.dist to .env and fill in the variables (BOT_TOKEN, OPENAI_API_KEY)
+10. Run `docker-compose up -d`
